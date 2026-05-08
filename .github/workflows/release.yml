@@ -1,0 +1,41 @@
+# Release workflow to create GitHub release
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# Required for creating GitHub releases
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history needed for git-cliff to walk all commits
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Verify module
+        run: |
+          go mod tidy
+          go vet ./...
+
+      - name: Generate changelog
+        id: changelog
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --latest --strip header
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.content }}
+          token: ${{ github.token }}
