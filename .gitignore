@@ -1,0 +1,26 @@
+# .gitignore for termactions
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Go workspace
+go.work
+go.work.sum
+
+# Editor/IDE artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
