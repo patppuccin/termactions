@@ -1,0 +1,36 @@
+# Changelog generator configuration for termactions
+# https://git-cliff.org/docs/configuration
+
+[changelog]
+header = ""
+body = """
+{% if version %}
+## {{ version }} — {{ timestamp | date(format="%Y-%m-%d") }}
+
+> To install or upgrade to this version, run `go get github.com/patppuccin/termactions@{{ version }}`.
+{% endif %}
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits %}
+- {{ commit.message | split(pat="\n") | first | trim }}\
+{% endfor %}
+{% endfor %}
+Visit the [termactions docs](https://termactions.patppuccin.com) for full reference.
+"""
+footer = ""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+    { message = "^(feat|fix|refactor|perf)!", group = "Breaking Changes" },
+    { message = "^feat", group = "Features" },
+    { message = "^(fix|refactor|perf)", group = "Changes & Fixes" },
+    { message = "^(docs|test|chore|ci|style|build)", skip = true },
+]
+protect_breaking_commits = true
+filter_commits = true
+tag_pattern = "v[0-9].*"
+sort_commits = "newest"
