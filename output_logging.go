@@ -25,7 +25,7 @@ func (l *log) WithStyles(s *StyleMap) *log {
 	return l
 }
 
-// WithPrefix overrides the default level prefix symbol.
+// WithPrefix overrides the default level prefix.
 func (l *log) WithPrefix(p string) *log {
 	l.prefix = p
 	return l
@@ -56,6 +56,7 @@ func (l *log) Error(msg string) {
 	l.render(l.cfg.Styles.LogErrorPrefix, l.cfg.Styles.LogErrorLabel, "(✗)", msg)
 }
 
+// render prints a level prefixed log line.
 func (l *log) render(pfxStyle, labelStyle *color.Color, defaultPfx, msg string) {
 	pfx := safeStyle(pfxStyle).Sprint(pick(l.prefix, defaultPfx))
 	label := safeStyle(labelStyle).Sprint(msg)
@@ -64,7 +65,7 @@ func (l *log) render(pfxStyle, labelStyle *color.Color, defaultPfx, msg string) 
 
 // ==== Log Group ==============================================================
 
-// logGroup prints a styled title line followed by indented message lines.
+// logGroup prints a styled title line followed by indented body lines.
 // Construct one with [LogGroup].
 type logGroup struct {
 	cfg    Config
@@ -85,7 +86,7 @@ func (l *logGroup) WithStyles(s *StyleMap) *logGroup {
 	return l
 }
 
-// WithPrefix overrides the default level prefix label.
+// WithPrefix overrides the default level prefix.
 func (l *logGroup) WithPrefix(p string) *logGroup {
 	l.prefix = p
 	return l
@@ -116,6 +117,7 @@ func (l *logGroup) Error(title string, msgs ...string) {
 	l.render(l.cfg.Styles.LogErrorPrefix, l.cfg.Styles.LogErrorLabel, "ERROR:", title, msgs...)
 }
 
+// render prints a level prefixed title line followed by indented body lines.
 func (l *logGroup) render(pfxStyle, labelStyle *color.Color, defaultPfx, title string, msgs ...string) {
 	pfx := safeStyle(pfxStyle).Sprint(pick(l.prefix, defaultPfx))
 	titleStr := safeStyle(labelStyle).Sprint(title)
@@ -123,4 +125,60 @@ func (l *logGroup) render(pfxStyle, labelStyle *color.Color, defaultPfx, title s
 	for _, msg := range msgs {
 		stdOutput.Write([]byte("  " + safeStyle(l.cfg.Styles.LogGroupBody).Sprint(msg) + "\n"))
 	}
+}
+
+// ==== Log Block ==============================================================
+
+// logBlock prints a colored title line, a blank line, body lines, and a trailing blank line.
+// Construct one with [LogBlock].
+type logBlock struct {
+	cfg Config
+}
+
+// LogBlock returns a builder for printing a colored title with spaced body lines.
+//
+//	termactions.LogBlock().Info("migration complete", "3 records updated", "0 errors")
+//	termactions.LogBlock().Warn("config missing", "falling back to defaults", "run init to configure")
+func LogBlock() *logBlock {
+	return &logBlock{cfg: pkgConfig}
+}
+
+// WithStyles overrides the [StyleMap] for this block.
+func (l *logBlock) WithStyles(s *StyleMap) *logBlock {
+	l.cfg.Styles = s
+	return l
+}
+
+// Success prints a success block.
+func (l *logBlock) Success(title string, msgs ...string) {
+	l.render(l.cfg.Styles.LogSuccessPrefix, title, msgs...)
+}
+
+// Debug prints a debug block.
+func (l *logBlock) Debug(title string, msgs ...string) {
+	l.render(l.cfg.Styles.LogDebugPrefix, title, msgs...)
+}
+
+// Info prints an info block.
+func (l *logBlock) Info(title string, msgs ...string) {
+	l.render(l.cfg.Styles.LogInfoPrefix, title, msgs...)
+}
+
+// Warn prints a warning block.
+func (l *logBlock) Warn(title string, msgs ...string) {
+	l.render(l.cfg.Styles.LogWarnPrefix, title, msgs...)
+}
+
+// Error prints an error block.
+func (l *logBlock) Error(title string, msgs ...string) {
+	l.render(l.cfg.Styles.LogErrorPrefix, title, msgs...)
+}
+
+// render prints a level styled title line with spaced body lines.
+func (l *logBlock) render(titleStyle *color.Color, title string, msgs ...string) {
+	stdOutput.Write([]byte(safeStyle(titleStyle).Sprint(title) + "\n\n"))
+	for _, msg := range msgs {
+		stdOutput.Write([]byte(safeStyle(l.cfg.Styles.LogGroupBody).Sprint(msg) + "\n"))
+	}
+	stdOutput.Write([]byte("\n"))
 }
