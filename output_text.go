@@ -63,6 +63,19 @@ func (m *message) Muted(msgs ...string) {
 	m.render(m.cfg.Styles.MsgMuted, msgs)
 }
 
+// Blank prints a single empty line.
+func (m *message) Blank() {
+	m.Blanks(1)
+}
+
+// Blanks prints n empty lines. Values below 1 print nothing.
+func (m *message) Blanks(n int) {
+	if n < 1 {
+		return
+	}
+	stdOutput.Write([]byte(strings.Repeat("\n", n)))
+}
+
 // render prints each message on its own line in the given style.
 func (m *message) render(style *color.Color, msgs []string) {
 	var b strings.Builder
