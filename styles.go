@@ -19,18 +19,19 @@ var stdOutput = colorable.NewColorableStdout()
 //	styles := termactions.NewStyles()
 //	styles.InputPrefix = color.New(color.FgMagenta)
 type StyleMap struct {
-	// Log message styles.
-	LogSuccessPrefix *color.Color
-	LogSuccessLabel  *color.Color
-	LogDebugPrefix   *color.Color
-	LogDebugLabel    *color.Color
-	LogInfoPrefix    *color.Color
-	LogInfoLabel     *color.Color
-	LogWarnPrefix    *color.Color
-	LogWarnLabel     *color.Color
-	LogErrorPrefix   *color.Color
-	LogErrorLabel    *color.Color
-	LogGroupBody     *color.Color
+	// Text-based message styles.
+	MsgSuccessPrefix *color.Color
+	MsgSuccessLabel  *color.Color
+	MsgDebugPrefix   *color.Color
+	MsgDebugLabel    *color.Color
+	MsgInfoPrefix    *color.Color
+	MsgInfoLabel     *color.Color
+	MsgWarnPrefix    *color.Color
+	MsgWarnLabel     *color.Color
+	MsgErrorPrefix   *color.Color
+	MsgErrorLabel    *color.Color
+	MsgNeutral       *color.Color
+	MsgMuted         *color.Color
 
 	// Input prompt styles.
 	InputPrefix         *color.Color
@@ -80,18 +81,19 @@ type StyleMap struct {
 // blue for info, and dark gray for muted/dimmed elements.
 func NewStyles() *StyleMap {
 	return &StyleMap{
-		// Log messages
-		LogSuccessPrefix: color.New(color.FgGreen),
-		LogSuccessLabel:  color.New(color.Reset),
-		LogDebugPrefix:   color.New(color.FgHiBlack),
-		LogDebugLabel:    color.New(color.Reset),
-		LogInfoPrefix:    color.New(color.FgBlue),
-		LogInfoLabel:     color.New(color.Reset),
-		LogWarnPrefix:    color.New(color.FgYellow),
-		LogWarnLabel:     color.New(color.Reset),
-		LogErrorPrefix:   color.New(color.FgRed),
-		LogErrorLabel:    color.New(color.Reset),
-		LogGroupBody:     color.New(color.Reset),
+		// Text-based message
+		MsgSuccessPrefix: color.New(color.FgGreen),
+		MsgSuccessLabel:  color.New(color.Reset),
+		MsgDebugPrefix:   color.New(color.FgHiBlack),
+		MsgDebugLabel:    color.New(color.Reset),
+		MsgInfoPrefix:    color.New(color.FgBlue),
+		MsgInfoLabel:     color.New(color.Reset),
+		MsgWarnPrefix:    color.New(color.FgYellow),
+		MsgWarnLabel:     color.New(color.Reset),
+		MsgErrorPrefix:   color.New(color.FgRed),
+		MsgErrorLabel:    color.New(color.Reset),
+		MsgNeutral:       color.New(color.Reset),
+		MsgMuted:         color.New(color.FgHiBlack),
 
 		// Input prompts
 		InputPrefix:         color.New(color.FgYellow),
