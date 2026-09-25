@@ -358,10 +358,11 @@ func (s *multiSelect) renderInteractive() ([]Choice, error) {
 		// Write new frame, clearing every physical row including wrapped continuations
 		var b strings.Builder
 		for i, line := range contentLines {
-			if i == len(contentLines)-1 {
-				b.WriteString("\r" + line + ansiClearLine)
-			} else {
-				b.WriteString("\r" + line + ansiClearLine + "\n")
+			b.WriteByte('\r')
+			b.WriteString(line)
+			b.WriteString(ansiClearLine)
+			if i != len(contentLines)-1 {
+				b.WriteByte('\n')
 			}
 		}
 		b.WriteString(ansiClearScreen)

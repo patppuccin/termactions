@@ -262,10 +262,11 @@ func (a *multilineText) renderInteractive() (string, error) {
 
 		var b strings.Builder
 		for idx, line := range frameLines {
-			if idx == len(frameLines)-1 {
-				b.WriteString("\r" + line + ansiClearLine)
-			} else {
-				b.WriteString("\r" + line + ansiClearLine + "\n")
+			b.WriteByte('\r')
+			b.WriteString(line)
+			b.WriteString(ansiClearLine)
+			if idx != len(frameLines)-1 {
+				b.WriteByte('\n')
 			}
 		}
 		b.WriteString(ansiClearScreen)
@@ -285,7 +286,8 @@ func (a *multilineText) renderInteractive() (string, error) {
 		} else {
 			// Reprint prompt + blank + content lines up to and including cursor line
 			var reprint strings.Builder
-			reprint.WriteString(promptLine + "\n\n")
+			reprint.WriteString(promptLine)
+			reprint.WriteString("\n\n")
 			for idx := 0; idx <= lineIdx; idx++ {
 				if idx == lineIdx {
 					// Only up to cursor column on the cursor line

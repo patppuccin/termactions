@@ -335,10 +335,11 @@ func (t *text) renderInteractive() (string, error) {
 
 		var b strings.Builder
 		for idx, line := range frameLines {
-			if idx == len(frameLines)-1 {
-				b.WriteString("\r" + line + ansiClearLine)
-			} else {
-				b.WriteString("\r" + line + ansiClearLine + "\n")
+			b.WriteByte('\r')
+			b.WriteString(line)
+			b.WriteString(ansiClearLine)
+			if idx != len(frameLines)-1 {
+				b.WriteByte('\n')
 			}
 		}
 		b.WriteString(ansiClearScreen)
